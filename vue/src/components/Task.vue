@@ -4,7 +4,7 @@
     <td>{{ task.name }}</td>
     <td>{{ task.description }}</td>
     <td>{{ task.submitTime }}</td>
-    <td>{{ labelTexts[task.label] }}</td>
+    <td>{{ labels[task.label].labelText }}</td>
     <td><button @click="complete">完了</button></td>
   </tr>
 </template>
@@ -22,7 +22,7 @@ export default {
   },
 
   computed: {
-    labelTexts: function() {
+    labels: function() {
       return this.$store.state.labels;
     },
   },

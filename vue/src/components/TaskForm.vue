@@ -21,10 +21,10 @@
       <label for="attribute">ラベル </label>
       <select id="attribute" v-model="label">
         <option
-          v-for="(labelText, index) in labelTexts"
-          v-bind:key="index"
-          v-bind:value="index"
-          >{{ labelText }}</option
+          v-for="label in labels"
+          v-bind:key="label.id"
+          v-bind:value="label.id"
+          >{{ label.labelText }}</option
         >
       </select>
     </div>
@@ -68,7 +68,7 @@ export default {
   },
 
   computed: {
-    labelTexts: function() {
+    labels: function() {
       return this.$store.state.labels;
     },
   },

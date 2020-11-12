@@ -18,12 +18,6 @@ export default {
     Tasks,
   },
 
-  computed: {
-    tasks: function() {
-      return this.$store.state.tasks;
-    },
-  },
-
   created() {
     this.$store.dispatch("getTasks");
     this.$store.dispatch("getLabels");

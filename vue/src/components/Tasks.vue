@@ -24,10 +24,10 @@
     <div v-if="FilterFlagString == 'OnFilter'">
       <select v-model="filterIndex">
         <option
-          v-for="(labelText, index) in labelTexts"
-          v-bind:key="index"
-          v-bind:value="index"
-          >{{ labelText }}</option
+          v-for="label in labels"
+          v-bind:key="label.id"
+          v-bind:value="label.id"
+          >{{ label.labelText }}</option
         >
       </select>
     </div>
@@ -83,7 +83,7 @@ export default {
       return this.$store.state.tasks;
     },
 
-    labelTexts: function() {
+    labels: function() {
       return this.$store.state.labels;
     },
   },

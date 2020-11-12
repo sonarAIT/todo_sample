@@ -3,13 +3,13 @@ package main
 import (
 	"net/http"
 
-	//"set1.ie.aitech.ac.jp/todo_sample/apifuncs"
-
 	_ "github.com/go-sql-driver/mysql"
+	"set1.ie.aitech.ac.jp/todo_sample/apifuncs"
 )
 
 func main() {
-	// http.HandleFunc("/hoge", apifuncs.HogeFunc)
+	http.HandleFunc("/tasks", apifuncs.TasksFunc)
+	http.HandleFunc("/labels", apifuncs.LabelsFunc)
 
 	http.ListenAndServe(":80", nil)
 }

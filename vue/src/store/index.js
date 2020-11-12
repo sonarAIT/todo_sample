@@ -22,7 +22,20 @@ export default new Vuex.Store({
         label: 2,
       },
     ],
-    labels: ["なし", "緊急", "期限なし"],
+    labels: [
+      {
+        id: 0,
+        labelText: "none",
+      },
+      {
+        id: 1,
+        labelText: "none",
+      },
+      {
+        id: 2,
+        labelText: "none",
+      },
+    ],
   },
 
   mutations: {
@@ -30,7 +43,7 @@ export default new Vuex.Store({
       state.tasks = tasks;
     },
     setLabels(state, labelTexts) {
-      state.tasks = labelTexts;
+      state.labels = labelTexts;
     },
     addTask(state, task) {
       state.tasks.push(task);
@@ -46,6 +59,7 @@ export default new Vuex.Store({
         .get(process.env.VUE_APP_API_TASKS)
         .then((res) => {
           context.commit("setTasks", res.data);
+          console.log(context.state.tasks);
         })
         .catch(() => {
           console.log("Tasksのgetに失敗しました.");
