@@ -13,7 +13,15 @@
 export default {
   name: "Task",
 
-  props: ["task"],
+  props: {
+    task: {
+      id: Number,
+      name: String,
+      description: String,
+      submitTime: String,
+      label: Number,
+    },
+  },
 
   methods: {
     complete: function() {

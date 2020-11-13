@@ -9,16 +9,9 @@ export default new Vuex.Store({
     tasks: [
       {
         id: 1,
-        name: "aaa",
-        description: "iii",
-        submitTime: "uuu",
-        label: 0,
-      },
-      {
-        id: 2,
-        name: "iii",
-        description: "uuu",
-        submitTime: "eee",
+        name: "タスク読み込みエラー",
+        description: "タスクを読み込めなかった時に出るタスクです",
+        submitTime: "2020/01/01 00:00:00",
         label: 2,
       },
     ],

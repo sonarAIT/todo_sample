@@ -29,7 +29,7 @@
       </select>
     </div>
 
-    <button v-on:click="submit">登録</button>
+    <button @click="submit">登録</button>
   </div>
 </template>
 
@@ -48,7 +48,12 @@ export default {
   methods: {
     submit: function() {
       let date = new Date();
-      let nextID = this.$store.state.tasks.slice(-1)[0].id + 1;
+      let nextID;
+      if (this.$store.state.tasks.length == 0) {
+        nextID = 1;
+      } else {
+        nextID = this.$store.state.tasks.slice(-1)[0].id + 1;
+      }
       let task = {
         id: nextID,
         name: this.name,
