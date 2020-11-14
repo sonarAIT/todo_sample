@@ -38,7 +38,7 @@
 
 nowFilter とは，現在どのフィルタを使用するかを表している変数である．App.vue に定義されているが，prop によってその値は TasksFilter.vue と Tasks.vue にも共有されている．
 
-また，TasksFilter.vue によると，ユーザがフィルタを選ぶと，親である App.vue に送信されるようになっているらしい．つまり，複数のファイルで nowFilter の値が共有されているというのが現状である．
+また，TasksFilter.vue によると，ユーザがフィルタを選ぶと，親である App.vue に nowFilter の値が送信されるようになっているらしい．つまり，複数のファイルで nowFilter の値が共有されているというのが現状である．
 
 かけるくんは，store に nowFilter を登録し，TasksFilter.vue と Tasks.vue から store を参照した方が簡潔に書けるのでは？（**かけるだけに！wwwwwwwwwww**）と考えた．
 
@@ -46,7 +46,7 @@ store に nowFilter を登録し，それに合わせて App.vue と TasksFilter
 
 ## 第六問
 
-Sonar くんは**問題を考えるのが面倒になった．** 今まで習った知識を使って，自分で 1 から電卓アプリを制作しなさい．
+Sonar くんは**問題を考えるのが面倒になった．** 今まで習った知識を使って，自分で 1 から電卓アプリを制作しなさい．
 
 以下の手順で新しくプロジェクトを立ち上げることができる．
 
