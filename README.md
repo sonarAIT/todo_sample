@@ -16,10 +16,10 @@
 
 （以後，`docker-compose up`と`npm run serve`だけでよい．）
 
-データベースをリセットしたくなった時は，docker のサーバを stop した上で，
+データベースをリセットしたくなった時は，todo_sample 以下のディレクトリにいることを確認した上で，
 
 ```
-docker container rm `docker container ls -aq`
+docker-compose down
 ```
 
 を実行する．
