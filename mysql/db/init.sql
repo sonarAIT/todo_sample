@@ -1,3 +1,5 @@
+-- コメント書かんよ（めんどい…）
+
 use prod_db;
 
 create table labels(
@@ -10,8 +12,8 @@ create table tasks(
     name varchar(128) not null,
     description varchar(256) not null,
     submitTime datetime not null,
-    label int not null,
-    foreign key (label) references labels (id) on delete cascade
+    label int not null
+    -- foreign key (label) references labels (id) on delete cascade
 );
 
 insert into
