@@ -443,11 +443,23 @@ fmt.Fprintln(w, jsonString)
 
 これだけ．
 
-`jsonBytes, err := json.Marshal(Tasks)`は先ほどと真逆で，データを送信するために Byte 列に Tasks を変換する．
+```
+jsonBytes, err := json.Marshal(Tasks)
+```
 
-`jsonString := string(jsonBytes)`でそれを文字列に変換する．（ちなみに，jsonString は普通に読むことができる．なので，この一連の操作を文字列操作による実装で行うことも可能だが，大抵の場合は json.Marshal してから string に変換した方が断トツではやい．）
+先ほどと真逆で，データを送信するために Byte 列に Tasks を変換する．
 
-`w.WriteHeader(http.StatusOK)`で処理が成功したことをヘッダーに記述する．
+```
+jsonString := string(jsonBytes)
+```
+
+それを文字列に変換する．（ちなみに，jsonString は普通に log.Print などを用いて読むことができる．なので，この一連の操作を文字列操作による実装で行うことも可能だが，大抵の場合は json.Marshal してから string に変換した方が断トツではやい．）
+
+```
+w.WriteHeader(http.StatusOK)
+```
+
+処理が成功したことをヘッダーに記述する．
 
 ```
 if Tasks == nil {
@@ -617,6 +629,8 @@ use prod_db
 
 ### select
 
+ここからは具体的に SQL について学んでいく．
+
 `select id, name from tasks;`
 
 こうすると
@@ -651,7 +665,7 @@ select．そのまんまである．
 
 ### update
 
-`update tasks set description='UHOUHO'`
+`update tasks set description='UHOUHO';`
 
 こうすると
 
@@ -728,6 +742,17 @@ insert で行を増やすことができる．
 ### 結合
 
 ところで，tasks の label は，ラベルの文字列そのものではなく labels テーブル の id を表している．
+
+```
+labels
++----+--------------+
+| id | label_text   |
++----+--------------+
+|  0 | なし         |
+|  1 | 緊急         |
+|  2 | 期限なし      |
++----+--------------+
+```
 
 というわけで，この二つの表は結合することが可能である．**やってみよう．**
 
