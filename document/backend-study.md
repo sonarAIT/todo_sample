@@ -385,7 +385,7 @@ Tasks = append(Tasks, Task{ID: id, Name: name, Description: description, SubmitT
 return Tasks, nil
 ```
 
-nil はエラーの nil である．（つまり，エラーがなかったということを返している．）
+nil はエラーの nil である．（つまり，エラーがなかったということを返している．）
 
 まとめると，
 
@@ -450,7 +450,7 @@ jsonBytes, err := json.Marshal(Tasks)
 先ほどと真逆で，データを送信するために Byte 列に Tasks を変換する．
 
 ```
-jsonString := string(jsonBytes)
+jsonString := string(jsonBytes)
 ```
 
 それを文字列に変換する．（ちなみに，jsonString は普通に log.Print などを用いて読むことができる．なので，この一連の操作を文字列操作による実装で行うことも可能だが，大抵の場合は json.Marshal してから string に変換した方が断トツではやい．）
