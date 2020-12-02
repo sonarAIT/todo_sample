@@ -26,15 +26,19 @@ JavaScript の printf．
 ### デベロッパー・ツール
 
 大体のブラウザに備わっている機能．Google Chrome では F12 を押すことで見えるようになる．（Macbook では Fn キーと F12 の同時押し）
-これの Console というタブで上記の Console.log の中身を見ることができる．
+これの Console というタブで上記の Console.log で表示したものを見ることができる．
 
 ### App.vue
 
 ページの親玉．ここにパーツを置いていってページを構成する感じになる．
 
+### タグ
+
+HTML で書く，a とか input とか div とか h1 とか p とかとにかく<>で囲んであるアレ．
+
 ### components
 
-component とは，ページに置くパーツである．これを App.vue に置いたり component の中に component を置いたりしながらページを作りあげていく．
+component とは，ページに置くパーツである．（君たちがタグを組み合わせてお手製で作る．）これを App.vue に置いたり component の中に component を置いたりしながらページを作りあげていく．
 
 もちろん，component を一切使わずに，App.vue に全てを記述することも可能なのだが，component を使うメリットもある．ページの要素をパーツに分けることによって，作業を分担しやすくなったり，読みやすくなったりする．
 
@@ -48,7 +52,7 @@ store フォルダの中の index.js がこれにあたる．
 
 ### axios
 
-Vue.js がサーバやその他諸々と通信するために使用する．URL を指定し，データを添付することでサーバにデータを送ったりデータを受け取ったりできる．
+クライアント（Vue.js）がサーバやその他諸々にリクエストを送信するために使用する．URL を指定し，データを添付することでサーバにデータを送ったりデータを受け取ったりできる．
 
 ちなみに，http の知識になるが，送信する http のリクエストには 4 つの種類がある．
 
@@ -71,6 +75,24 @@ DELETE: データの削除
 ```
 
 という 4 種類の処理を割り当てることができる．受け取った 4 種類のリクエストを割り振るのは，バックエンドの仕事になる．（仕事と言っても，そう難しくは無いが…）
+
+### body
+
+http で，サーバに送信するリクエストにはデータを添付することができる．それが body．例えば，タスクをサーバに登録するために，body にタスクの情報を入れて送信したりする．**GET だと送れないので注意**（厳密には curl を使えば送れる．が，axios などでは基本的には送れないので，多分非推奨なんだろう．多分．）
+
+余談だが，当サンプルでは新しく登録する一つのタスクの情報ではなく，存在する全てのタスクをいちいちサーバに送信している．（なぜそんな無駄な仕様になっているかというと，それを直す問題を出題しているから．last-homework.vue を参照．）
+
+### クエリパラメータ
+
+GET でもデータを送りたいことがある．その時はクエリパラメータを使用する．
+
+```
+http://hoge/tasks?user=sonarAIT&hoge=fuga
+```
+
+という感じに書けば，user は sonarAIT で hoge は fuga というデータが送信できる．
+
+ただ，**外から丸見えなので注意．**
 
 ## JavaScript 部分の書き方
 
@@ -111,7 +133,7 @@ console.log(this.hoge)
 ### props
 
 親から変数を受け取る機能．本サンプルでは TodoFilter.vue などで使用されている．
-先ほど，component はパーツと述べた．なので，そのパーツを置いている場所（親．つまり，TodoFilter.vue から見ると App.vue）から変数が受け取れたら便利な場合がある．そこで，
+先ほど，component はパーツと述べた．なので，そのパーツを置いている場所（親．つまり，TodoFilter.vue から見ると App.vue）の data から変数が受け取れたら便利な場合がある．そこで，
 
 ```
 props: {
@@ -120,14 +142,14 @@ props: {
 },
 ```
 
-と書くと， prop の名前と型を書けば親から変数を受け取ることができる．
+というように， prop の名前と型を書けば親から変数を受け取ることができる．
 親では，
 
 ```
-<ComponentHoge v-bind:propHoge="hoge" v-bind:propFuga="fuga">
+<ComponentHoge v-bind:propHoge="hogeNum" v-bind:propFuga="fugaStr">
 ```
 
-と記述する．（hoge と fuga は変数．）
+と記述する．（hogeNum と fugaStr は変数．）
 なお，v-bind の特性によって，親の変数の値が変更されると子の値も変更される．親の hoge の値が変わったら，子の propHoge の値も変わるということだ．（v-bind に関する詳しい話は後ほど行う．）
 
 ### methods
@@ -201,9 +223,13 @@ watch: {
 
 コンポーネントの名前を定義する．これを書かないと認識されない．忘れて時間を取られがちなので注意．
 
+```
+name: "HogeComponent"
+```
+
 ### components
 
-使用する component を定義する．App.vue が一番わかりやすい．
+そのファイル内で使用する component を定義する．App.vue が一番わかりやすい．
 component を使用する親では，import して，component に定義するという一連の流れを行わないといけない．
 
 ```
@@ -216,16 +242,15 @@ export default {
 };
 ```
 
-と書いて，ようやく html で HogeComponent を使用することができる．
+と書いて，ようやく HTML で HogeComponent を使用することができる．
 
 ### created
 
 ページ及び component が表示された際（起動時）に実行される関数．（厳密に言えば表示よりもっと早いタイミングだったはずだが，どうでもいい．）App.vue に例がある．
-これだけ定義の仕方が他と明らかに違う．
 
 ```
 created() {
-    console.log("表示しました")
+    console.log("ページを表示しました")
 },
 ```
 
@@ -254,9 +279,19 @@ TaskForm.vue にて~~無理やりねじ込んだ~~使用例を見ることがで
 
 **一番大事**．これを使えなかったら Vue.js をやったことがあると名乗ってはいけない．
 
-v-bind とは，つまるところ，タグの属性の設定に変数を使用することができる機能である．
+v-bind とは，つまるところ，タグの属性の設定に data 内などにある変数を使用することができる機能である．computed や props も使用できる．
 
-例えば，data に`URLString: "http://google.com"`と定義されていたとする．これを a で使うには，
+例えば，data に`URLString: "http://google.com"`と定義されていたとする．
+
+```
+data() {
+    return {
+        URLString: "http://google.com",
+    };
+}
+```
+
+これを a で使うには，
 
 ```
 <a v-bind:href="URLSring">googleへ</a>
@@ -268,19 +303,41 @@ v-bind とは，つまるところ，タグの属性の設定に変数を使用�
 先ほどの例で述べたように一番重要なので，もう一つ例を紹介する．<input>タグにおいて
 
 ```
-<input type="text" value="HOGE">
+<input type="text" value="こんにちは〜">
 ```
 
-と書けば，最初から HOGE と入力されている入力欄が出来上がる．これを v-bind を使ってバインディングさせると
+と書けば，最初から こんにちは〜 と入力されている入力欄が出来上がる．（こんにちは〜は文字列）
+
+![vue-study-1](images/vue-study-1.png)
+
+こんな感じ．
+
+これを v-bind を使ってバインディングさせると
+
+```
+data() {
+    return {
+        hoge: "こんにちは〜",
+    }
+}
+```
 
 ```
 <input type="text" v-bind:value="hoge">
 ```
 
-data 内の変数 hoge の値が入力欄に表示されることになる．
+data 内の変数 hoge の値（こんにちは〜）が入力欄に表示されることになる．
 もちろん，hoge の値が変われば input 内の表示も変わる．
 
-ただし，欠点がある．input は文字通り入力欄で，type="text"ということは 文字を入力するための入力欄ということになる．つまり，入力欄を書き換えたら当然 data の hoge も書き換えて欲しいところなのだが，それは叶わない願いである．なぜなら，v-bind はあくまで data などの変数を html 上のタグの属性の値として使用できるだけであって，html 上で値が変わろうと JavaScript の方を書き換えることはできないからである．JavaScript から html に対して一方通行なのだ．
+ちなみに，あまりによく使うので`:`というように省略できる．
+
+```
+<input type="text" :value="hoge">
+```
+
+ただし，欠点がある．input は文字通り入力欄で，type="text"ということは 文字を入力するための入力欄ということになる．つまり，入力欄を書き換えたら当然 data の hoge も書き換えて欲しいところなのだが，それは叶わない願いである．なぜなら，v-bind はあくまで data などの変数を html 上のタグの属性の値として使用できるだけであって，クライアントの操作によって input 内の値が変わろうと JavaScript の方を書き換えることはできないからである．
+
+要するに，入力欄をどう書き換えても data 内の hoge はずっと"こんにちは〜"のままなのである．JavaScript における変更は HTML に適応されるが，逆は絶対にない．JavaScript から HTML に対して一方通行なのだ．
 
 次項でこれに対する対処法を説明する．
 
@@ -325,6 +382,14 @@ JavaScript 側で hogeBool が true になった瞬間に，初めてこの**ウ
 data 内に`hogeArray: ['aaa', 'iii', 'uuu']`のように記述されていたとする．
 
 ```
+data() {
+    return {
+        hogeArray: ['aaa', 'iii', 'uuu'],
+    };
+}
+```
+
+```
 <p v-for="hogeString in hogeArray" v-bind:key="hogeString">{{hogeString}}</p>
 ```
 
@@ -338,9 +403,9 @@ iii
 uuu
 ```
 
-ここでの hogeString は，配列のうちの 1 つの要素を意味している．**(data 内の変数では無いことに注意)**
+ここでの hogeString は，配列から取り出した 1 つの要素を意味している．**(data 内の変数では無いことに注意)**
 
-ちなみに気をつけなければいけないのが，v-bind:key である．key を設定することにより，vue が配列の要素を識別することが可能になり，動作が安定する．今回の key は文字列そのものである．v-bind:key は設定しなくとも動くが，基本的に設定しなければならない．
+ちなみに気をつけなければいけないのが，v-bind:key である．key は，Vue が配列の要素を特定するために使用する．（つまり，一意，オンリーワンで無ければならない．）key を設定することにより，動作が安定する．今回の key は文字列そのものである．v-bind:key は設定しなくとも動くが，基本的に設定しなければならない．
 
 ```
 <p v-for="(hogeString, index)  in hogeArray" v-bind:key="index">{{hogeString}}</p>
@@ -412,6 +477,7 @@ mutations: {
 こう定義する．代入したいときは
 
 ```
+// hogeは変数
 var hoge = 1
 this.$store.commit('setHoge', hoge)
 ```
@@ -436,6 +502,7 @@ action: {
 
 ```
 
+var hoge = 1
 this.$store.dispatch('hogeAction', hoge)
 
 ```
