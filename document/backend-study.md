@@ -65,7 +65,9 @@ DELETE: データの削除
 
 ### body
 
-http のリクエストにはデータを添付することができる．それが body．**GET だと送れないので注意**（厳密には curl を使えば送れる．が，axios などでは基本的には送れないので，多分非推奨なんだろう．多分．）
+http のリクエストにはデータを添付することができる．それが body．例えば，タスクをサーバに登録するために，body にタスクの情報を入れて送信したりする．**GET だと送れないので注意**（厳密には curl を使えば送れる．が，axios などでは基本的には送れないので，多分非推奨なんだろう．多分．）
+
+余談だが，当サンプルでは新しく登録する一つのタスクの情報ではなく，存在する全てのタスクをいちいちサーバに送信している．（なぜそんな無駄な仕様になっているかというと，それを直す問題を出題しているから．last-homework.vue を参照．）
 
 ### クエリパラメータ
 
@@ -116,7 +118,7 @@ func main() {
 
 という意味である．
 
-80 番ポートに関してはどうでも良くて，ここで覚えて欲しいのは，**クライアントがリクエストする URL の種類を増やしたかったら http.HandleFunc と対応する関数を増やせばいい**ということである．
+80 番ポートに関してはどうでも良くて，ここで覚えて欲しいのは，**クライアントがリクエストできる URL の種類を増やしたかったら http.HandleFunc と対応する関数を増やせばいい**ということである．
 
 例えば，このアプリケーションにログイン機能を実装して，ログインの http リクエストを受け取ることになった場合，
 
@@ -130,7 +132,7 @@ http.HandleFunc("/login", apifuncs.LoginFunc)
 
 ### リクエストの種別(GET, POST, PUT, DELETE)を識別する．
 
-apiFuncs のファイル（どっちでもいい）を見てみよう．
+apiFuncs のファイル（どっちでもいい）の関数を見てみよう．
 
 ```
 w.Header().Set("Access-Control-Allow-Origin", "*")                       // Allow any access.
@@ -168,7 +170,7 @@ if r.Method == http.MethodGet {
 
 とりあえず，body の受け取り方をやる．apifuncs/tasks.go の POST を参照する．
 
-/tasks の POST では「クライアントからタスク一覧を受け取り，受け取ったタスク一覧に合わせてデータベースを更新する」という処理を行っている．
+/tasks の POST では「クライアントからタスク一覧を受け取り，受け取ったタスク一覧に合わせてデータベースを更新する」という処理を行っている．つまり，以下の処理は「クライアントから受け取ったタスク一覧を解読する」という処理だ．
 
 ```
 jsonBytes, err := ioutil.ReadAll(r.Body)
@@ -250,7 +252,7 @@ if err := json.Unmarshal(jsonBytes, &recTasks); err != nil {
 
 ・`jsonBytes, err := ioutil.ReadAll(r.Body)`で body をバイト列に変換．
 
-・`var recTasks []dbctl.Task`で body を受け取るための変数を宣言．
+・`var recTasks []dbctl.Task`で body を受け取るための配列変数を宣言．
 
 ・`if err := json.Unmarshal(jsonBytes, &recTasks); err != nil {`でバイト列を変換し変数に代入．
 
@@ -276,6 +278,8 @@ log.Print(query.Get("user"))
 /tasks の POST の処理はややこしいので，/tasks の GET を見てみる．(apifuncs/tasks.go)
 
 /tasks の GET では，「クライアントにデータベースのタスク一覧を送信する」という処理を行っている．（必要がないので，body やクエリパラメータは受け取っていない．）
+
+今回行うデータベースの処理は，「データベースからタスク一覧を取得する」である．
 
 ```
 Tasks, err := dbctl.GetTasks()
@@ -377,7 +381,9 @@ C 言語の scanf を思い出してくれた人もいるのではないだろ�
 Tasks = append(Tasks, Task{ID: id, Name: name, Description: description, SubmitTime: submitTime, Label: label})
 ```
 
-要するに，Tasks に新しい Task オブジェクトを加えた新しい Tasks を生成し，それを 古い Tasks に代入するということをしている．（動作原理は複雑だが，結局やっているのは「Tasks に新しいタスクを追加する」という行為である．）
+要するに，Tasks に新しい Task オブジェクトを加えた新しい Tasks を生成し，それを 古い Tasks に代入するということをしている．
+
+動作原理は複雑だが，結局やっているのは「Tasks 配列に新しいタスクを追加する」という行為である．
 
 あとは，返す．
 
@@ -397,7 +403,7 @@ nil はエラーの nil である．（つまり，エラーがなかったと�
 
 という流れで処理を行っている．
 
-データベースの更新とかだと，エラー以外に受け取るものがないので，2 番目が消えたり 3 番目がエラーだけを返したりといろいろ変わってくる（そこは　ケースバイケース）
+データベースの更新とかだと，エラー以外にデータベースから受け取るものがないので，2 番目が消えたり 3 番目がエラーだけを返したりといろいろ変わってくる（そこは　ケースバイケース）
 
 ### 処理結果を送信できるように変換する．
 
@@ -473,11 +479,11 @@ if Tasks == nil {
 fmt.Fprintln(w, jsonString)
 ```
 
-最後の最後に返信に処理の結果の集大成である jsonString を記述して終わり．**ふう．**
+最後の最後に処理の結果の集大成である jsonString を返信に記述して終わり．**ふう．**
 
 まとめると，
 
-・json.Marshal して Byte 列に変換してから string で 読める JSON に変換する．
+・json.Marshal して Byte 列に変換してから， string(jsonBytes) で読める JSON に変換する．
 
 ・w.WriteHeader(http.StatusOK)しておく
 
@@ -561,7 +567,7 @@ console.log(res.data.name)
 
 ```
 
-こんな感じ．
+こんな感じで，フロントエンドで使用可能．
 
 ## SQL の書き方
 
